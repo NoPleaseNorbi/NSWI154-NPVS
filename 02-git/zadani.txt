@@ -1,0 +1,192 @@
+Horvath Norbert
+nhorvathkzgimi@gmail.com
+
+Deadline: 23.10.2022
+
+Requirements:
+- You do not have to procotol absolutely everything, such as 'cd' commands,
+  'rm -rf' when the task tells you to do a 'rm -rf', 'vim file', etc.
+- Include output of commands only when explicitly requested.
+- Exact command for repeated actions (such as 'git commit -m') is needed
+  only once. You can just state "(commit)" on further occurences.
+- You can write answers in Czech.
+
+Useful links and help:
+  http://git-scm.com/doc
+  'git' - lists basic commands (you should not need any other commands here)
+  'git help <command>' - detailed syntax and options of a given command
+
+
+-----
+Tasks
+-----
+
+1. Configure your identity (name, email) on the target machine, if you have not already.
+  I made it using the git config commands:
+  git config --global user.name "Horvath Norbert"
+  git config --global user.email ...
+
+2. Create your own private Git repository in a local project directory (working copy).
+  Using the web I made a new project
+
+3. Create a new file that contains a program computing factorials for numbers 1 to 10.
+   The program should print each computed factorial on a separate line.
+   Use your favorite programming language (C, Java, C#, Python, ...).
+   Make the file tracked by Git. Save current version into the repository.
+  Using git add factor.py
+  git commit -m "new file"
+  git push
+
+4. Split the program into two parts: (1) a library that contains the function for computing factorials and (2) a client that invokes the procedure.
+  Use an approach typical for your favorite programming language.
+  However, you have to create new file(s) to contain the new parts.
+
+5. Ensure that new file(s), created in step 4, are tracked by Git and commit everything into the repository.
+  I changed the two programs
+  git add factor.py
+  git add factorial.py
+  git status
+  git commit -m "commit message"
+  git push
+  git ls-files file_name
+
+6. Remove the original file created in step 3 (make sure it is not tracked by Git anymore). Commit everything.
+  git rm somefile.py
+  git commit
+  git push
+
+7. Create new branch with the name "oneline" and switch to it.
+  git checkout -b oneline
+
+8. In your branch, modify the program to print all computed factorials on a single line.
+   Commit everything properly.
+   mcedit factor.py
+   changed the file
+   git status
+   git add factor.py
+   git commit
+   git push --set-upstream origin oneline
+
+9. Go back to the original branch (master).
+  git checkout main
+
+10. Make the following two changes to the factorial program in the given order, but commit only the second modification.
+   (i) Program should compute factorials for the numbers 1 to 15.
+   (ii) Add new procedure that computes and prints squares of numbers 1 to 10.
+   changed the files factor.py and factorial.py
+   git status
+   git diff
+   git add factor.py
+   git add factorial.py
+   git commit
+   git push
+
+11. Print the current status of the working copy and all uncommitted modifications.
+  git status
+  git diff
+
+12. Revert uncommitted modifications in the working copy.
+  git reset
+  git checkout .
+
+13. Merge the branch "oneline" into the last version on the master branch.
+  git merge oneline
+
+14. Print short information about each commit.
+  git log
+
+15. Clone existing repository into a completely separate directory (new working copy).
+	URL: https://gitlab.mff.cuni.cz/teaching/nswi154/cviceni2022.git
+	Note that your Git client may use GUI to ask for the password, so it may not work when you do it in console remotely over ssh.
+	You probably have to log in at least once through the web interface (https://gitlab.mff.cuni.cz) to ensure that your Git account is created.
+	Let me know if you have any problems with accessing the repository (it works for me, but I cannot use it from a student account, obviously).
+
+  git clone http...
+
+16. Modify content of the file main.c somehow.
+    For example, add the code printing your name.
+    mcedit main.c
+
+
+17. Print all modifications done in the working copy.
+  git diff
+
+18. Update your working copy to match the current state of the remote public repository (at the server "gitlab.mff.cuni.cz").
+    Someone might have changed the remote repository in the meantime.
+    git pull origin master
+
+19. Publish your modifications in the remote repository (at the server "gitlab.mff.cuni.cz").
+  git commit -m
+  git push
+
+20. Create new branch in your local repository (cloned from the server "gitlab.mff.cuni.cz") that starts in the version that was HEAD at the point of time when you cloned the original remote repository (gitlab.mff).
+    Give unique name to your branch (to avoid conflicts with other students).
+    Make some changes in the branch (e.g., add new files with some content) and commit them.
+    git checkout
+    touch norbi.md 
+    ...
+    git add norbi.md
+    git commit -m
+    git push --set-upstream origin norbisbranch
+
+21. Merge the current HEAD of the master branch into your branch created in the previous task (everything just in the local repository).
+  git merge main
+
+22. Publish your branch to the remote repository.
+  git commit
+  git push
+
+23. Remove the whole directory "cviceni2021" that contains your local repository.
+    Clone the existing repository again (like in the task 15).
+    git clone
+
+24. List all the branches. Switch to your own branch that you created in the task 20.
+  git branch -a
+  git switch norbisbranch
+
+25. Alternative solution for task 13 that will use rebasing.
+  git checkout oneline
+  git rebase main
+
+26. Alternative solution for task 10 that does not use "git add -p" or "git add -i".
+  git stash
+
+27. Extension of task 20: modify the last commit message (add some text).
+  git commit --amend
+
+28. Clone existing repository at the URL https://github.com/d3sformal/panda.git.
+    Find the numbers (IDs) of all revisions created by me (try author names "Pavel Parizek" and/or "pparizek") since 1.7.2014.
+
+    git log --oneline --all --graph --decorate  $(git reflog | awk '{print $1}')
+
+
+
+-------
+Survey:
+-------
+
+We use the survey to evaluate the labs (tasks) and homework assignments.
+It is completely voluntary, but useful for future tuning of the content and level of complexity of the labs.
+Most questions can be answered using the scale from 1 to 10.
+Write your answer under the corresponding question.
+
+(1) How new was the topic and content of the lab for you?
+     (1 - brand new, 10 - I already knew everything)
+     7
+
+(2) Do you think that the content of this lab was useful?
+     (1 - useless or too trivial, 10 - very useful)
+     8
+
+(3) How do you evaluate the level of complexity of the homework assignment?
+     (1 - too trivial, 5-6 - just about right, 10 - too demanding or complex)
+     7
+
+(4) How do you evaluate your prior experience with the tool in the context of the homework assignment?
+     (1 - I already know and can use everything, 10 - I tried everything practically for the first time)
+     5
+
+(5) How much time (in minutes) did you spend working on the homework assignment?
+  300
+
+(6) Additional space for your own comments on the lab and homework assignment:

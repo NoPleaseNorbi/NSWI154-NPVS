@@ -1,0 +1,337 @@
+Norbert Horvath
+nhorvathkzgimi@gmail.com
+
+Deadline: 30.10.2022
+
+Requirements:
+- You do not have to procotol absolutely everything, such as 'cd' commands,
+  'rm -rf' when the task tells you to do a 'rm -rf', 'vim file', etc.
+- Include output of commands only when explicitly requested.
+- You can write answers in Czech.
+
+Useful links and help:
+  http://www.gnu.org/software/make/manual/
+
+
+-----
+Tasks
+-----
+
+0. The "mydb" directory contains implementation of a very simple database.
+   All source code files are in the "src" subdirectory.
+
+1. Write all necessary Makefiles for the "mydb" project.
+   Satisfy the following requirements:
+	- create one Makefile at the top level (project root) and one Makefile in the 'src' subdirectory
+		- for each target, the top-level Makefile should invoke the nested Makefile (in the 'src' directory) using the recommended approach
+		- the nested Makefile should contain the actual rules for compiling source code files, removing generated object files, and so on
+	- the full build process should create three binaries (programs): testadmin, testclient, testserver
+		- each binary program should be linked against the static library libmydb.a (see below)
+		- the binary programs 'testclient' and 'testadmin' will be also linked with the following libraries: libreadline, libhistory
+		- you can use a command similar to the following one to perform correct linking:
+    gcc -o testclient -L. testclient.c client_comm.c -lmydb -lreadline -lhistory
+		- the binary program 'testclient' must be built from these source files: testclient.c, client_comm.c
+		- the binary program 'testserver' must be built from these source files: testserver.c, server_comm.c
+		- the binary program 'testadmin' must be built from these source files: testadmin.c
+	- the build process should also create the static library libmydb.a
+		- the library must contain object files for all source files except those specific for the binary programs (see above)
+		- use the following command to create the library file libmydb.a: ar -rcvs libmydb.a <list of object files to be included>
+	- specify proper dependencies between object files, source files (.c), and binary programs
+	- specify dependencies on header files (.h) only for "data.c" (by looking into the source code)
+		- you do *not* have to specify dependencies on header files in the case of other source files, because there is too many of them
+	- other requirements on both Makefiles
+		- support the following targets
+			all -> compiles everything (i.e., the full build)
+			clean -> deletes all the generated files
+		- define and use built-in variables for compiler and flags
+			- variable CC with the value 'gcc'
+			- variable CFLAGS with the value '-g -Wall'
+			- set values of the variables in the top-level Makefile and tell Make to propagate the values to the Makefile in the 'src' subdirectory
+		- use features supported by Make to eliminate duplication (static pattern rules, implicit rules, variables, functions),
+    but do not over-generalize at the expense of clarity
+ 		- targets that do not correspond to real files should be marked appropriately
+
+2. Test the Makefiles by executing "make" in the root directory of "mydb".
+   Ignore all the warnings printed by GCC. The source code is quite old
+   and does not follow the recent standards of C, but it should compile anyway.
+   Paste the output of Make here.
+   u-pl21:~/Desktop/NPVS/zadani/mydb$ make
+cd src && make all
+make[1]: Entering directory '/afs/ms.mff.cuni.cz/u/h/horvatno/Desktop/NPVS/zadani/mydb/src'
+rm -rf testadmin testclient testserver *.o libmydb.a
+cc -c  btree_int.c -o btree_int.o
+cc -c  conds.c -o conds.o
+cc -c  config.c -o config.o
+cc -c  data.c -o data.o
+cc -c  db_engine.c -o db_engine.o
+cc -c  db_main.c -o db_main.o
+cc -c  error.c -o error.o
+cc -c  index.c -o index.o
+cc -c  memory.c -o memory.o
+cc -c  parser_commands.c -o parser_commands.o
+cc -c  parser_conds.c -o parser_conds.o
+cc -c  query.c -o query.o
+cc -c  result.c -o result.o
+cc -c  sql_parser.c -o sql_parser.o
+cc -c  strutil.c -o strutil.o
+cc -c  tabconf.c -o tabconf.o
+cc -c  tabdef.c -o tabdef.o
+cc -c  textfileio.c -o textfileio.o
+cc  -c testclient.c -o testclient.o
+cc  -c client_comm.c -o client_comm.o
+ar -rovs libmydb.a btree_int.o conds.o config.o data.o db_engine.o db_main.o error.o index.o memory.o parser_commands.o parser_conds.o query.o result.o sql_parser.o strutil.o tabconf.o tabdef.o textfileio.o
+ar: creating libmydb.a
+a - btree_int.o
+a - conds.o
+a - config.o
+a - data.o
+a - db_engine.o
+a - db_main.o
+a - error.o
+a - index.o
+a - memory.o
+a - parser_commands.o
+a - parser_conds.o
+a - query.o
+a - result.o
+a - sql_parser.o
+a - strutil.o
+a - tabconf.o
+a - tabdef.o
+a - textfileio.o
+cc  -o testclient -L. testclient.c client_comm.c -lmydb -lreadline -lhistory
+cc  -c testserver.c -o testserver.o
+cc  -o testserver -L. testserver.c server_comm.c -lmydb -lreadline -lhistory
+server_comm.c: In function ‘wait_for_request’:
+server_comm.c:66:62: warning: passing argument 3 of ‘accept’ from incompatible pointer type [-Wincompatible-pointer-types]
+   66 |         new_sock = accept(sock,(struct sockaddr*)&clientname,&size);
+      |                                                              ^~~~~
+      |                                                              |
+      |                                                              size_t * {aka long unsigned int *}
+In file included from server_comm.c:1:
+/usr/include/sys/socket.h:307:42: note: expected ‘socklen_t * restrict’ {aka ‘unsigned int * restrict’} but argument is of type ‘size_t *’ {aka ‘long unsigned int *’}
+  307 |                    socklen_t *__restrict __addr_len);
+      |                    ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+cc  -c testadmin.c -o testadmin.o
+cc  -o testadmin -L. testadmin.c -lmydb -lreadline -lhistory
+make[1]: Leaving directory '/afs/ms.mff.cuni.cz/u/h/horvatno/Desktop/NPVS/zadani/mydb/src'
+
+3. Demonstrate that the dependencies work properly by invoking "make", "touch src/memory.h", "make", "touch src/testserver.c", "make".
+   Paste the output of each command here.
+   u-pl21:~/Desktop/NPVS/zadani/mydb$ make
+   cd src && make all
+   make[1]: Entering directory '/afs/ms.mff.cuni.cz/u/h/horvatno/Desktop/NPVS/zadani/mydb/src'
+   rm -rf testadmin testclient testserver *.o libmydb.a
+   cc -c  btree_int.c -o btree_int.o
+   cc -c  conds.c -o conds.o
+   cc -c  config.c -o config.o
+   cc -c  data.c -o data.o
+   cc -c  db_engine.c -o db_engine.o
+   cc -c  db_main.c -o db_main.o
+   cc -c  error.c -o error.o
+   cc -c  index.c -o index.o
+   cc -c  memory.c -o memory.o
+   cc -c  parser_commands.c -o parser_commands.o
+   cc -c  parser_conds.c -o parser_conds.o
+   cc -c  query.c -o query.o
+   cc -c  result.c -o result.o
+   cc -c  sql_parser.c -o sql_parser.o
+   cc -c  strutil.c -o strutil.o
+   cc -c  tabconf.c -o tabconf.o
+   cc -c  tabdef.c -o tabdef.o
+   cc -c  textfileio.c -o textfileio.o
+   cc  -c testclient.c -o testclient.o
+   cc  -c client_comm.c -o client_comm.o
+   ar -rovs libmydb.a btree_int.o conds.o config.o data.o db_engine.o db_main.o error.o index.o memory.o parser_commands.o parser_conds.o query.o result.o sql_parser.o strutil.o tabconf.o tabdef.o textfileio.o
+   ar: creating libmydb.a
+   a - btree_int.o
+   a - conds.o
+   a - config.o
+   a - data.o
+   a - db_engine.o
+   a - db_main.o
+   a - error.o
+   a - index.o
+   a - memory.o
+   a - parser_commands.o
+   a - parser_conds.o
+   a - query.o
+   a - result.o
+   a - sql_parser.o
+   a - strutil.o
+   a - tabconf.o
+   a - tabdef.o
+   a - textfileio.o
+   cc  -o testclient -L. testclient.c client_comm.c -lmydb -lreadline -lhistory
+   cc  -c testserver.c -o testserver.o
+   cc  -o testserver -L. testserver.c server_comm.c -lmydb -lreadline -lhistory
+   server_comm.c: In function ‘wait_for_request’:
+   server_comm.c:66:62: warning: passing argument 3 of ‘accept’ from incompatible pointer type [-Wincompatible-pointer-types]
+      66 |         new_sock = accept(sock,(struct sockaddr*)&clientname,&size);
+         |                                                              ^~~~~
+         |                                                              |
+         |                                                              size_t * {aka long unsigned int *}
+   In file included from server_comm.c:1:
+   /usr/include/sys/socket.h:307:42: note: expected ‘socklen_t * restrict’ {aka ‘unsigned int * restrict’} but argument is of type ‘size_t *’ {aka ‘long unsigned int *’}
+     307 |                    socklen_t *__restrict __addr_len);
+         |                    ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   cc  -c testadmin.c -o testadmin.o
+   cc  -o testadmin -L. testadmin.c -lmydb -lreadline -lhistory
+   make[1]: Leaving directory '/afs/ms.mff.cuni.cz/u/h/horvatno/Desktop/NPVS/zadani/mydb/src'
+
+
+   u-pl21:~/Desktop/NPVS/zadani/mydb$ touch src/memory.h
+
+   make[1]: Entering directory '/afs/ms.mff.cuni.cz/u/h/horvatno/Desktop/NPVS/zadani/mydb/src'
+   rm -rf testadmin testclient testserver *.o libmydb.a
+   cc -c  btree_int.c -o btree_int.o
+   cc -c  conds.c -o conds.o
+   cc -c  config.c -o config.o
+   cc -c  data.c -o data.o
+   cc -c  db_engine.c -o db_engine.o
+   cc -c  db_main.c -o db_main.o
+   cc -c  error.c -o error.o
+   cc -c  index.c -o index.o
+   cc -c  memory.c -o memory.o
+   cc -c  parser_commands.c -o parser_commands.o
+   cc -c  parser_conds.c -o parser_conds.o
+   cc -c  query.c -o query.o
+   cc -c  result.c -o result.o
+   cc -c  sql_parser.c -o sql_parser.o
+   cc -c  strutil.c -o strutil.o
+   cc -c  tabconf.c -o tabconf.o
+   cc -c  tabdef.c -o tabdef.o
+   cc -c  textfileio.c -o textfileio.o
+   cc  -c testclient.c -o testclient.o
+   cc  -c client_comm.c -o client_comm.o
+   ar -rovs libmydb.a btree_int.o conds.o config.o data.o db_engine.o db_main.o error.o index.o memory.o parser_commands.o parser_conds.o query.o result.o sql_parser.o strutil.o tabconf.o tabdef.o textfileio.o
+   ar: creating libmydb.a
+   a - btree_int.o
+   a - conds.o
+   a - config.o
+   a - data.o
+   a - db_engine.o
+   a - db_main.o
+   a - error.o
+   a - index.o
+   a - memory.o
+   a - parser_commands.o
+   a - parser_conds.o
+   a - query.o
+   a - result.o
+   a - sql_parser.o
+   a - strutil.o
+   a - tabconf.o
+   a - tabdef.o
+   a - textfileio.o
+   cc  -o testclient -L. testclient.c client_comm.c -lmydb -lreadline -lhistory
+   cc  -c testserver.c -o testserver.o
+   cc  -o testserver -L. testserver.c server_comm.c -lmydb -lreadline -lhistory
+   server_comm.c: In function ‘wait_for_request’:
+   server_comm.c:66:62: warning: passing argument 3 of ‘accept’ from incompatible pointer type [-Wincompatible-pointer-types]
+      66 |         new_sock = accept(sock,(struct sockaddr*)&clientname,&size);
+         |                                                              ^~~~~
+         |                                                              |
+         |                                                              size_t * {aka long unsigned int *}
+   In file included from server_comm.c:1:
+   /usr/include/sys/socket.h:307:42: note: expected ‘socklen_t * restrict’ {aka ‘unsigned int * restrict’} but argument is of type ‘size_t *’ {aka ‘long unsigned int *’}
+     307 |                    socklen_t *__restrict __addr_len);
+         |                    ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   cc  -c testadmin.c -o testadmin.o
+   cc  -o testadmin -L. testadmin.c -lmydb -lreadline -lhistory
+   make[1]: Leaving directory '/afs/ms.mff.cuni.cz/u/h/horvatno/Desktop/NPVS/zadani/mydb/src'
+   u-pl21:~/Desktop/NPVS/zadani/mydb$ touch src/testserver.c
+   u-pl21:~/Desktop/NPVS/zadani/mydb$ make
+cd src && make all
+make[1]: Entering directory '/afs/ms.mff.cuni.cz/u/h/horvatno/Desktop/NPVS/zadani/mydb/src'
+rm -rf testadmin testclient testserver *.o libmydb.a
+cc -c  btree_int.c -o btree_int.o
+cc -c  conds.c -o conds.o
+cc -c  config.c -o config.o
+cc -c  data.c -o data.o
+cc -c  db_engine.c -o db_engine.o
+cc -c  db_main.c -o db_main.o
+cc -c  error.c -o error.o
+cc -c  index.c -o index.o
+cc -c  memory.c -o memory.o
+cc -c  parser_commands.c -o parser_commands.o
+cc -c  parser_conds.c -o parser_conds.o
+cc -c  query.c -o query.o
+cc -c  result.c -o result.o
+cc -c  sql_parser.c -o sql_parser.o
+cc -c  strutil.c -o strutil.o
+cc -c  tabconf.c -o tabconf.o
+cc -c  tabdef.c -o tabdef.o
+cc -c  textfileio.c -o textfileio.o
+cc  -c testclient.c -o testclient.o
+cc  -c client_comm.c -o client_comm.o
+ar -rovs libmydb.a btree_int.o conds.o config.o data.o db_engine.o db_main.o error.o index.o memory.o parser_commands.o parser_conds.o query.o result.o sql_parser.o strutil.o tabconf.o tabdef.o textfileio.o
+ar: creating libmydb.a
+a - btree_int.o
+a - conds.o
+a - config.o
+a - data.o
+a - db_engine.o
+a - db_main.o
+a - error.o
+a - index.o
+a - memory.o
+a - parser_commands.o
+a - parser_conds.o
+a - query.o
+a - result.o
+a - sql_parser.o
+a - strutil.o
+a - tabconf.o
+a - tabdef.o
+a - textfileio.o
+cc  -o testclient -L. testclient.c client_comm.c -lmydb -lreadline -lhistory
+cc  -c testserver.c -o testserver.o
+cc  -o testserver -L. testserver.c server_comm.c -lmydb -lreadline -lhistory
+server_comm.c: In function ‘wait_for_request’:
+server_comm.c:66:62: warning: passing argument 3 of ‘accept’ from incompatible pointer type [-Wincompatible-pointer-types]
+   66 |         new_sock = accept(sock,(struct sockaddr*)&clientname,&size);
+      |                                                              ^~~~~
+      |                                                              |
+      |                                                              size_t * {aka long unsigned int *}
+In file included from server_comm.c:1:
+/usr/include/sys/socket.h:307:42: note: expected ‘socklen_t * restrict’ {aka ‘unsigned int * restrict’} but argument is of type ‘size_t *’ {aka ‘long unsigned int *’}
+  307 |                    socklen_t *__restrict __addr_len);
+      |                    ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+cc  -c testadmin.c -o testadmin.o
+cc  -o testadmin -L. testadmin.c -lmydb -lreadline -lhistory
+make[1]: Leaving directory '/afs/ms.mff.cuni.cz/u/h/horvatno/Desktop/NPVS/zadani/mydb/src'
+
+4. Send all the Makefiles together with the protocol in a single archive.
+   Do not include binaries, object files, and other temporary files generated during the build.
+
+
+-------
+Survey:
+-------
+
+We use the survey to evaluate the labs (tasks) and homework assignments.
+It is completely voluntary, but useful for future tuning of the content and level of complexity of the labs.
+Most questions can be answered using the scale from 1 to 10.
+Write your answer under the corresponding question.
+
+(1) How new was the topic and content of the lab for you?
+     (1 - brand new, 10 - I already knew everything)
+     1
+
+(2) Do you think that the content of this lab was useful?
+     (1 - useless or too trivial, 10 - very useful)
+     10
+
+(3) How do you evaluate the level of complexity of the homework assignment?
+     (1 - too trivial, 5-6 - just about right, 10 - too demanding or complex)
+     8
+
+(4) How do you evaluate your prior experience with the tool in the context of the homework assignment?
+     (1 - I already know and can use everything, 10 - I tried everything practically for the first time)
+     10
+
+(5) How much time (in minutes) did you spend working on the homework assignment?
+  600
+
+(6) Additional space for your own comments on the lab and homework assignment:

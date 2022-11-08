@@ -1,0 +1,58 @@
+<project name="ftp" default="build">
+    <property name="src.dir" value="./src"/>
+    <property name="build.dir" value="./build"/>
+    <property name="lib.dir" value="./lib"/>
+    <property name="run.dir" value="."/>
+    <path id="library.classpath.jar">
+        <fileset dir="${lib.dir}" casesensitive="yes">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+<target name="timestamp">
+    <tstamp/>
+</target>
+
+<target name="init">
+    <mkdir dir="${build.dir}"/>
+</target>
+
+<target name="dist" depends="init, timestamp">
+    <javac destdir="${build.dir}" srcdir="${src.dir}">
+       <src path="${src.dir}"/>
+       <classpath refid="library.classpath.jar"/>
+    </javac>
+    <manifest file="MANIFEST.MF">
+        <section name="Informations about the project">
+          <attribute name="Project" value="FTP"/>
+          <attribute name="BuildDate" value="${DSTAMP}"/>
+        </section>
+    </manifest>
+    <zip destfile="./build.zip" basedir="${build.dir}"/>
+</target>
+
+<target name="build" depends="dist, timestamp">
+    <jar jarfile="ftpserver-${DSTAMP}.jar" basedir="${build.dir}"/>
+</target>
+
+<target name="clean" depends="timestamp">
+    <delete dir="${build.dir}"/>
+    <delete file="ftpserver-${DSTAMP}.jar"/>
+</target>
+
+
+<target name="run" depends="timestamp">
+    <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+    <if>
+        <avaliable file="ftpserver-${DSTAMP}.jar"/>
+        <then>
+            <java fork="true" classname="${build.dir}/org/apache/ftpserver/commandline/CommandLine">
+            </java>
+        </then>
+    </if>
+    <else>
+        <echo>The files is not present</echo>
+    </else>
+</target> 
+
+</project>
